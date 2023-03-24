@@ -1,0 +1,29 @@
+config:
+  target: "http://127.0.0.1:3000"
+  phases:
+    - duration: 10
+      arrivalRate: 60
+      name: Warm up
+    - duration: 10
+      arrivalRate: 10
+      rampTo: 25
+      name: Ramp up load
+    - duration: 20
+      arrivalRate: 25
+      name: 'Cruise'  
+    - duration: 20
+      arrivalRate: 100
+      name: 'Crash' 
+  processor: "./afterResponse.js"
+  payload:
+    path: "./key-value-pair.csv"
+    fields:
+      - "key"
+      - "value"
+scenarios:
+  - name: "testing http"
+    flow:
+      - get:
+          url: "/api/v1/key/{{key}}"
+          afterResponse: "verifyValue"
+      
